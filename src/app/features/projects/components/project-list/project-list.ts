@@ -11,28 +11,34 @@ import { CommonModule } from '@angular/common';
 export class ProjectListComponent {
   Projects = [
     {
-      name: 'Project 1',
-      description: 'This is the first project.',
+      name: 'Smart Task Tracker',
+      description: 'A web app that helps teams create, assign, and track tasks with priorities, deadlines, and progress visualization.',
       status: 'In Progress',
       tasks: [
-        { title: 'task1', priority: 'High', status: 'In Progress' },
-        { title: 'task2', priority: 'Low', status: 'pending' }
+        { title: 'Design database schema', priority: 'High', status: 'In Progress' },
+        { title: 'Setup project repository', priority: 'Low', status: 'pending' }
       ]
     },
      {
-      name: 'Project 2',
-      description: 'This is the second project.',
+      name: 'E-Commerce Website Launch',
+      description: 'A responsive e-commerce website with product listings, shopping cart, and checkout functionality.',
       status: 'completed',
       tasks: [
-        { title: 'task1', priority: 'High', status: 'completed' }
+        { title: 'UI Design', priority: 'High', status: 'completed' },
+        { title: 'Market research', priority: 'Medium', status: 'completed' }
+
       ]
     },
      {
-      name: 'Project 3',
-      description: 'This is the third project.',
+      name: 'Bug Tracking System',
+      description: 'latform to report and manage software bugs.',
       status: 'pending',
       tasks: [
-        { title: 'task1', priority: 'Medium', status: 'pending' }
+        { title: 'Setup project repository', priority: 'High', status: 'pending' },
+        { title: 'Create bug reporting module', priority: 'Medium', status: 'pending' },
+          { title: 'Content creation', priority: 'Low', status: 'pending' }, 
+            { title: 'Testing and QA', priority: 'Medium', status: 'pending' }
+
       ]
     }
   ];
