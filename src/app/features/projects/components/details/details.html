@@ -1,0 +1,84 @@
+<!-- Modal backdrop - click on backdrop closes modal -->
+<div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center" 
+     (click)="closeModal()">
+  
+  <!-- Modal content - stop propagation so clicks inside don't close the modal -->
+  <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4" 
+       (click)="$event.stopPropagation()">
+    
+    <!-- Modal header -->
+    <div class="flex items-center justify-between p-4 border-b rounded-t">
+      <h3 class="text-xl font-semibold text-gray-900">
+        {{ project.name }}
+      </h3>
+      <button 
+        (click)="closeModal(); $event.stopPropagation()" 
+        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+        type="button">
+        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+        </svg>
+        <span class="sr-only">Close modal</span>
+      </button>
+    </div>
+    
+    <!-- Modal body -->
+    <div class="p-6 space-y-4">
+      <div>
+        <h4 class="text-sm font-medium text-gray-500 mb-1">Description</h4>
+        <p class="text-gray-700">{{ project.description }}</p>
+      </div>
+      
+      <div>
+        <h4 class="text-sm font-medium text-gray-500 mb-1">Status</h4>
+        <span class="px-3 py-1 rounded-full text-sm font-medium"
+              [ngClass]="{
+                'bg-green-100 text-green-800': project.status === 'completed',
+                'bg-blue-100 text-blue-800': project.status === 'In Progress',
+                'bg-yellow-100 text-yellow-800': project.status === 'pending'
+              }">
+          {{ project.status }}
+        </span>
+      </div>
+      
+      <!-- Tasks section -->
+      <div>
+        <h4 class="text-sm font-medium text-gray-500 mb-2">Tasks ({{ project.tasks.length }})</h4>
+        <div class="max-h-60 overflow-y-auto space-y-2">
+          @for (task of project.tasks; track task.title) {
+            <div class="border rounded p-3">
+              <div class="font-medium">{{ task.title }}</div>
+              <div class="flex gap-2 mt-1">
+                <span class="text-xs px-2 py-1 rounded"
+                      [ngClass]="{
+                        'bg-red-100 text-red-800': task.priority === 'High',
+                        'bg-orange-100 text-orange-800': task.priority === 'Medium',
+                        'bg-green-100 text-green-800': task.priority === 'Low'
+                      }">
+                  {{ task.priority }}
+                </span>
+                <span class="text-xs px-2 py-1 rounded"
+                      [ngClass]="{
+                        'bg-yellow-100 text-yellow-800': task.status === 'pending',
+                        'bg-blue-100 text-blue-800': task.status === 'In Progress',
+                        'bg-green-100 text-green-800': task.status === 'completed'
+                      }">
+                  {{ task.status }}
+                </span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal footer -->
+    <div class="flex justify-end p-4 border-t">
+      <button 
+        (click)="closeModal(); $event.stopPropagation()" 
+        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:ring-4 focus:ring-blue-300">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
