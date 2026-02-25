@@ -1,12 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-interface Task {
-  title: string;
-  priority: string;
-  status: string;
-}
-
 @Component({
   selector: 'app-task-list',
   standalone: true,
@@ -16,15 +10,40 @@ interface Task {
 })
 export class TaskListComponent {
   @Input() tasks: Task[] = [];
-  priorityClasses: Record<string, string> = {
-    'High': 'bg-red-100 text-red-800',
-    'Medium': 'bg-orange-100 text-orange-800',
-    'Low': 'bg-green-100 text-green-800'
+  // Priority configurations
+  priorityConfigs: Record<string, PriorityStyle> = {
+    'High': { bgClass: 'bg-red-50', textClass: 'text-red-600' },
+    'Medium': { bgClass: 'bg-orange-50', textClass: 'text-orange-600' },
+    'Low': { bgClass: 'bg-green-50', textClass: 'text-green-600' }
   };
- statusClasses: Record<string, string> = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    'In Progress': 'bg-blue-100 text-blue-800',
-    completed: 'bg-green-100 text-green-800'
+
+  // Shared status configurations 
+  statusConfigs: Record<string, StatusStyle> = {
+    'pending': {
+      badgeBg: 'bg-yellow-50',
+      badgeText: 'text-yellow-600',
+      dotClass: 'bg-yellow-400',
+      label: 'Pending'
+    },
+    'In Progress': {
+      badgeBg: 'bg-blue-50',
+      badgeText: 'text-blue-600',
+      dotClass: 'bg-blue-400',
+      label: 'In Progress'
+    },
+    'completed': {
+      badgeBg: 'bg-green-50',
+      badgeText: 'text-green-600',
+      dotClass: 'bg-green-400',
+      label: 'Completed'
+    }
   };
-  
+
+  getPriorityConfig(priority: string): PriorityStyle {
+    return this.priorityConfigs[priority] || this.priorityConfigs['Low'];
+  }
+
+  getStatusConfig(status: string): StatusStyle {
+    return this.statusConfigs[status] || this.statusConfigs['pending'];
+  }
 }
