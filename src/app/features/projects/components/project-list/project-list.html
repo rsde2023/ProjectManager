@@ -1,25 +1,62 @@
-<div class="container mx-auto p-6">
-  <h1 class="text-3xl font-bold mb-6 text-gray-800">Project Management</h1>
-  
-  <div class="space-y-4">
+<div class="container mx-auto p-6 max-w-5xl">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 border-b-2 border-gray-200 pb-3">
+      Project Management
+    </h1>
+    <p class="text-gray-500 mt-2 text-sm">{{Projects.length}} active projects</p>
+  </div>
+
+  <!-- Projects Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     @for (project of Projects; track project.name) {
-      <div class="bg-white shadow rounded p-4">
-        <div class="border-b pb-3 mb-3">
+    <div
+      class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden border border-gray-100">
+
+      <!-- Colored header using config -->
+      <div class="h-2" [class]="getStatusConfig(project.status).bgColor"></div>
+
+      <div class="p-5">
+        <!-- Project header -->
+        <div class="flex justify-between items-start mb-3">
           <h2 class="text-xl font-semibold text-gray-800">{{ project.name }}</h2>
-          <p class="text-gray-600 text-sm mt-1">{{ project.description }}</p>
-          <span class="inline-block mt-2 px-3 py-1 rounded-full text-sm"
-                [ngClass]="{
-                  'bg-green-100 text-green-800': project.status === 'completed',
-                  'bg-orange-200 text-orange-800': project.status === 'pending',
-                  'bg-blue-100 text-blue-800': project.status === 'In Progress'
-                }">
-            {{ project.status }}
+          <span class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-2"
+            [class]="getStatusConfig(project.status).badgeBg + ' ' + getStatusConfig(project.status).badgeText">
+            {{ getStatusConfig(project.status).label }}
           </span>
         </div>
-        
-        <!-- Liste des tâches -->
-        <app-task-list [tasks]="project.tasks"></app-task-list>
+
+        <!-- Description -->
+        <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ project.description }}</p>
+
+        <!-- Tasks section -->
+        <div class="mt-4">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">
+              Tasks ({{project.tasks.length}})
+            </h3>
+            <button class="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors duration-150"
+              (click)="selectProject(project)">
+              View details →
+            </button>
+          </div>
+
+          <app-task-list [tasks]="project.tasks"></app-task-list>
+        </div>
       </div>
+    </div>
     }
   </div>
+
+  <!-- Empty state -->
+  @if (Projects.length === 0) {
+  <div class="text-center py-12 bg-gray-50 rounded-lg">
+    <p class="text-gray-500">No projects available</p>
+  </div>
+  }
+
+  <!-- Modal -->
+  @if (selectedProject) {
+  <app-details [project]="selectedProject" (close)="closeModal()"></app-details>
+  }
 </div>
