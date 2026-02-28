@@ -4,18 +4,21 @@
     <h1 class="text-3xl font-bold text-gray-800 border-b-2 border-gray-200 pb-3">
       Project Management
     </h1>
-    <p class="text-gray-500 mt-2 text-sm">{{Projects.length}} active projects</p>
+<p class="text-gray-500 mt-2 text-sm">{{filteredProjects.length}} active projects</p>
   </div>
-
+  <!-- Add this below the header -->
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Search projects..."
+          class="w-full mb-6 px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" />
+        <!-- Description -->
   <!-- Projects Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    @for (project of Projects; track project.name) {
+    @for (project of filteredProjects; track project.name) {
     <div
       class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden border border-gray-100">
 
       <!-- Colored header using config -->
-      <div class="h-2" [class]="getStatusConfig(project.status).bgColor"></div>
-
+      <div class="h-2" [ngClass]="getStatusConfig(project.status).bgColor">
+      </div>
       <div class="p-5">
         <!-- Project header -->
         <div class="flex justify-between items-start mb-3">
@@ -25,8 +28,7 @@
             {{ getStatusConfig(project.status).label }}
           </span>
         </div>
-
-        <!-- Description -->
+      
         <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ project.description }}</p>
 
         <!-- Tasks section -->

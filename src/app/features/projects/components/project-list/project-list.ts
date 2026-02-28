@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { TaskListComponent } from '../task-list/task-list';
 import { CommonModule } from '@angular/common';
 import { Details } from '../details/details';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-project-list',
-  imports: [TaskListComponent, CommonModule, Details],
+  imports: [TaskListComponent, CommonModule, Details, FormsModule],
   templateUrl: './project-list.html',
   styleUrl: './project-list.css',
 })
@@ -43,6 +44,13 @@ export class ProjectListComponent {
   // Helper method to get status config
   getStatusConfig(status: string): StatusStyle {
     return this.statusConfigs[status] || this.statusConfigs['pending'];
+  }
+  searchTerm: string = '';
+  get filteredProjects(): Project[] {
+    if (!this.searchTerm.trim()) return this.Projects;
+    return this.Projects.filter(p =>
+      p.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
   Projects: Project[] = [
     {
