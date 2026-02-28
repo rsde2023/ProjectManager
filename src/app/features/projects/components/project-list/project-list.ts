@@ -63,6 +63,12 @@ export class ProjectListComponent {
       ]
     },
     {
+      name: 'project management',
+      description: 'A web app that helps teams manage, lead and track projects with task assignments, progress visualization, and collaboration features.',
+      status: 'In Progress',
+      tasks: []
+    },
+    {
       name: 'E-Commerce Website Launch',
       description: 'A responsive e-commerce website with product listings, shopping cart, and checkout functionality.',
       status: 'completed',
