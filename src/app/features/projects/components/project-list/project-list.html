@@ -1,5 +1,4 @@
 <div class="container mx-auto p-6 max-w-5xl">
-  <!-- Header -->
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-800 border-b-2 border-gray-200 pb-3">
       Project Management
@@ -7,7 +6,6 @@
     <p class="text-gray-500 mt-2 text-sm">{{filteredProjects.length}} active projects</p>
   </div>
 
-  <!-- Search input -->
   <input type="text" [(ngModel)]="searchTerm" placeholder="Search projects..."
     class="w-full mb-6 px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" />
 
@@ -15,29 +13,24 @@
     <p class="text-gray-400 text-sm italic py-2">No projects found</p>
   }
 
-  <!-- Projects Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     @for (project of filteredProjects; track project.name) {
       <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden border border-gray-100">
 
         <!-- Colored top border -->
-        <div class="h-2" [style.backgroundColor]="getStatusConfig(project.status).bgColor"></div>
+        <div class="h-2" [ngClass]="getStatusConfig(project.status).bgColor"></div>
 
         <div class="p-5">
-          <!-- Project header -->
           <div class="flex justify-between items-start mb-3">
             <h2 class="text-xl font-semibold text-gray-800">{{ project.name }}</h2>
             <span class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-2"
-              [style.backgroundColor]="getStatusConfig(project.status).badgeBg"
-              [style.color]="getStatusConfig(project.status).badgeText">
+              [ngClass]="[getStatusConfig(project.status).badgeBg, getStatusConfig(project.status).badgeText]">
               {{ getStatusConfig(project.status).label }}
             </span>
           </div>
 
-          <!-- Description -->
           <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ project.description }}</p>
 
-          <!-- Tasks section -->
           <div class="mt-4">
             <div class="flex justify-between items-center mb-3">
               <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">
@@ -48,7 +41,6 @@
                 View details →
               </button>
             </div>
-
             <app-task-list [tasks]="project.tasks"></app-task-list>
           </div>
         </div>
@@ -57,14 +49,12 @@
     }
   </div>
 
-  <!-- Empty state (no projects at all) -->
   @if (Projects.length === 0) {
     <div class="text-center py-12 bg-gray-50 rounded-lg">
       <p class="text-gray-500">No projects available</p>
     </div>
   }
 
-  <!-- Modal -->
   @if (selectedProject) {
     <app-details [project]="selectedProject" (close)="closeModal()"></app-details>
   }

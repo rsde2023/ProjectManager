@@ -22,25 +22,25 @@ export class ProjectListComponent {
     this.selectedProject = null;
   }
 statusConfigs: Record<string, StatusStyle> = {
-  'completed': {
-    bgColor: '#22c55e',    // green-500
-    badgeBg: '#dcfce7',    // green-100
-    badgeText: '#15803d',  // green-700
-    label: 'Completed'
-  },
-  'pending': {
-    bgColor: '#f97316',    // orange-500
-    badgeBg: '#ffedd5',    // orange-100
-    badgeText: '#c2410c',  // orange-700
-    label: 'Pending'
-  },
-  'In Progress': {
-    bgColor: '#3b82f6',    // blue-500
-    badgeBg: '#dbeafe',    // blue-100
-    badgeText: '#1d4ed8',  // blue-700
-    label: 'In Progress'
-  }
-};
+    'completed': {
+      bgColor: 'bg-green-500',
+      badgeBg: 'bg-green-100',
+      badgeText: 'text-green-700',
+      label: 'Completed'
+    },
+    'pending': {
+      bgColor: 'bg-orange-500',
+      badgeBg: 'bg-orange-100',
+      badgeText: 'text-orange-700',
+      label: 'Pending'
+    },
+    'In Progress': {
+      bgColor: 'bg-blue-500',
+      badgeBg: 'bg-blue-100',
+      badgeText: 'text-blue-700',
+      label: 'In Progress'
+    }
+  };
   // Helper method to get status config
   getStatusConfig(status: string): StatusStyle {
     return this.statusConfigs[status] || this.statusConfigs['pending'];
