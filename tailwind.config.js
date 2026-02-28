@@ -13,8 +13,9 @@ export default {
   'bg-blue-50', 'text-blue-600',
   'bg-green-50', 'text-green-600',
   // task priority badges
-  'bg-red-50', 'text-red-600',
-  'bg-orange-50', 'text-orange-600',
+  'bg-red-200', 'text-red-600',
+  'bg-orange-200', 'text-orange-600',
+  'bg-green-200', 'text-green-600'
 ],
   theme: {
     extend: {},

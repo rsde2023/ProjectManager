@@ -4,7 +4,7 @@
   }
 
   @for (task of tasks; track task.title) {
-    <div class="flex items-center justify-between p-2 hover:bg-gray-50 rounded-md transition-colors duration-150">
+    <div [appHighlightStatus]="task.status" class="flex items-center justify-between p-2 hover:bg-gray-50 rounded-md transition-colors duration-150">
       <!-- Task title and status dot -->
       <div class="flex items-center space-x-3 flex-1 min-w-0">
         <span class="w-2 h-2 rounded-full flex-shrink-0" 

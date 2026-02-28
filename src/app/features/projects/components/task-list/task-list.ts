@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HighlightStatusDirective } from '../../../../core/highlight-status.directive';
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HighlightStatusDirective],
   templateUrl: './task-list.html',
   styleUrls: ['./task-list.css']
 })
@@ -12,9 +13,9 @@ export class TaskListComponent {
   @Input() tasks: Task[] = [];
   // Priority configurations
   priorityConfigs: Record<string, PriorityStyle> = {
-    'High': { bgClass: 'bg-red-50', textClass: 'text-red-600' },
-    'Medium': { bgClass: 'bg-orange-50', textClass: 'text-orange-600' },
-    'Low': { bgClass: 'bg-green-50', textClass: 'text-green-600' }
+    'High': { bgClass: 'bg-red-200', textClass: 'text-red-600' },
+    'Medium': { bgClass: 'bg-orange-200', textClass: 'text-orange-600' },
+    'Low': { bgClass: 'bg-green-200', textClass: 'text-green-600' }
   };
 
   // Shared status configurations 

@@ -21,7 +21,7 @@ export class ProjectListComponent {
     console.log("Setting selectedProject to null");
     this.selectedProject = null;
   }
-statusConfigs: Record<string, StatusStyle> = {
+  statusConfigs: Record<string, StatusStyle> = {
     'completed': {
       bgColor: 'bg-green-500',
       badgeBg: 'bg-green-100',
