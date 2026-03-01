@@ -13,5 +13,9 @@ export class Details {
     console.log('Emitting close event...');
     this.close.emit();
   }
+  getProgress(): number {
+    if (this.project.tasks.length === 0) return 0;
+    return Math.round((this.project.tasks.filter(t => t.status === 'completed').length / this.project.tasks.length) * 100);
+  }
 
 }

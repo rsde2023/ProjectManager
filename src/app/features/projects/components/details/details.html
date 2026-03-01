@@ -37,6 +37,28 @@
               }">
           {{ project.status }}
         </span>
+        <!-- Progress bar -->
+<div class="mt-4">
+  <div class="flex justify-between items-center mb-1">
+    <span class="text-sm font-medium text-gray-600">Progress</span>
+    <span class="text-sm font-semibold text-gray-800">{{ getProgress() }}%</span>
+  </div>
+  <div class="w-full bg-gray-200 rounded-full h-2.5">
+    @if (getProgress() === 100) {
+      <div class="h-2.5 rounded-full transition-all duration-500 bg-green-500"
+           [style.width.%]="getProgress()">
+      </div>
+    } @else if (getProgress() >= 50) {
+      <div class="h-2.5 rounded-full transition-all duration-500 bg-blue-500"
+           [style.width.%]="getProgress()">
+      </div>
+    } @else {
+      <div class="h-2.5 rounded-full transition-all duration-500 bg-orange-500"
+           [style.width.%]="getProgress()">
+      </div>
+    }
+  </div>
+</div>
       </div>
 
       <!-- Tasks section -->
