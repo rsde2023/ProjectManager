@@ -1,11 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HighlightStatusDirective } from '../../../../core/highlight-status.directive';
+import { PriorityColorPipe } from '../../../../core/priority-color.pipe';
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, HighlightStatusDirective],
+  imports: [CommonModule, HighlightStatusDirective, PriorityColorPipe],
   templateUrl: './task-list.html',
   styleUrls: ['./task-list.css']
 })
