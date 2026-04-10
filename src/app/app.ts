@@ -43,6 +43,16 @@ export class App implements OnInit {
     console.log(`Projet avec l'ID ${projectId} supprimé`);
   }
 
+  onProjectUpdated(updatedProject: Project) {
+    // Trouver et mettre à jour le projet
+    const index = this.projects.findIndex(p => p.id === updatedProject.id);
+    if (index !== -1) {
+      this.projects[index] = updatedProject;
+      this.saveProjectsToLocalStorage();
+      console.log('Projet mis à jour:', updatedProject);
+    }
+  }
+
   private saveProjectsToLocalStorage() {
     localStorage.setItem('projects', JSON.stringify(this.projects));
   }

@@ -1,0 +1,216 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" (click)="cancel()">
+  
+  <div class="max-w-lg w-full bg-white shadow-xl rounded-xl max-h-[90vh] overflow-y-auto" (click)="onModalContentClick($event)">
+    
+    <!-- Modal header -->
+    <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+      <h2 class="text-2xl font-bold text-gray-800">Modifier le projet</h2>
+      <button
+        (click)="cancel()"
+        class="text-gray-400 hover:text-gray-600 transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal body -->
+    <div class="p-6">
+      
+      <!-- Message de succès -->
+      @if (successMessage) {
+        <div class="mb-4 px-4 py-3 bg-green-100 text-green-700 rounded-lg text-sm font-medium">
+          {{ successMessage }}
+        </div>
+      }
+
+      <form #editForm="ngForm" (ngSubmit)="onSubmit()">
+        
+        <!-- ID du projet (non modifiable) -->
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-gray-700 mb-1">ID du projet</label>
+          <input
+            type="text"
+            [value]="editProject.id"
+            disabled
+            class="w-full px-4 py-2 border rounded-lg text-sm bg-gray-100 text-gray-500 cursor-not-allowed"
+          />
+        </div>
+
+        <!-- Nom du projet avec validation HTML -->
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nom du projet *</label>
+          <input
+            type="text"
+            name="name"
+            [(ngModel)]="editProject.name"
+            #name="ngModel"
+            required
+            minlength="4"
+            class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+            [class.border-red-500]="name.invalid && name.touched"
+            placeholder="Nom du projet"
+          />
+          <!-- Messages d'erreur HTML -->
+          @if (name.invalid && name.touched) {
+            @if (name.errors?.['required']) {
+              <p class="text-red-500 text-xs mt-1">Le nom du projet est obligatoire.</p>
+            }
+            @if (name.errors?.['minlength']) {
+              <p class="text-red-500 text-xs mt-1">Le nom doit comporter au moins 4 caractères.</p>
+            }
+          }
+        </div>
+
+        <!-- Description avec validation HTML -->
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+          <textarea
+            name="description"
+            [(ngModel)]="editProject.description"
+            #description="ngModel"
+            required
+            rows="3"
+            class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+            [class.border-red-500]="description.invalid && description.touched"
+            placeholder="Description du projet"
+          ></textarea>
+          <!-- Message d'erreur HTML -->
+          @if (description.invalid && description.touched) {
+            <p class="text-red-500 text-xs mt-1">La description est obligatoire.</p>
+          }
+        </div>
+
+        <!-- Statut avec validation HTML -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Statut *</label>
+          <select
+            name="status"
+            [(ngModel)]="editProject.status"
+            #status="ngModel"
+            required
+            class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+            [class.border-red-500]="status.invalid && status.touched"
+          >
+            <option value="">-- Sélectionner un statut --</option>
+            @for (statusOption of statusOptions; track statusOption) {
+              <option [value]="statusOption">
+                {{ statusOption === 'In Progress' ? 'In Progress' : (statusOption | titlecase) }}
+              </option>
+            }
+          </select>
+          <!-- Message d'erreur HTML -->
+          @if (status.invalid && status.touched) {
+            <p class="text-red-500 text-xs mt-1">Le statut ne doit pas être vide.</p>
+          }
+        </div>
+
+        <!-- Tâches existantes -->
+        @if (editProject.tasks.length > 0) {
+          <div class="mb-6 border-t pt-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Tâches existantes ({{ editProject.tasks.length }})</h3>
+            <ul class="space-y-2 max-h-48 overflow-y-auto">
+              @for (task of editProject.tasks; track $index) {
+                <li class="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                  <div class="flex-1">
+                    <p class="text-sm font-medium text-gray-800">{{ task.title }}</p>
+                    <p class="text-xs text-gray-600">
+                      <span class="inline-block mr-3">Priorité: <strong>{{ task.priority }}</strong></span>
+                      <span>Statut: <strong>{{ task.status === 'In Progress' ? 'In Progress' : (task.status | titlecase) }}</strong></span>
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    (click)="removeTask($index)"
+                    class="ml-2 px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition"
+                  >
+                    Supprimer
+                  </button>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
+        <!-- Ajouter une nouvelle tâche -->
+        <div class="mb-6 border-t pt-6">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Ajouter une tâche</h3>
+          
+          <div class="space-y-3 mb-4 p-4 bg-gray-50 rounded-lg">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Titre de la tâche</label>
+              <input
+                type="text"
+                [(ngModel)]="newTask.title"
+                name="newTaskTitle"
+                placeholder="Entrez le titre de la tâche"
+                class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+              />
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Priorité</label>
+                <select
+                  [(ngModel)]="newTask.priority"
+                  name="newTaskPriority"
+                  class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                >
+                  @for (priority of priorityOptions; track priority) {
+                    <option [value]="priority">{{ priority }}</option>
+                  }
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+                <select
+                  [(ngModel)]="newTask.status"
+                  name="newTaskStatus"
+                  class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                >
+                  @for (statusOption of statusOptions; track statusOption) {
+                    <option [value]="statusOption">
+                      {{ statusOption === 'In Progress' ? 'In Progress' : (statusOption | titlecase) }}
+                    </option>
+                  }
+                </select>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              (click)="addTask()"
+              [disabled]="!newTask.title.trim()"
+              class="w-full py-2 px-4 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            >
+              + Ajouter cette tâche
+            </button>
+          </div>
+        </div>
+
+        <!-- Boutons -->
+        <div class="flex gap-3 sticky bottom-0 bg-white pt-4 border-t mt-4">
+          <!-- Bouton Enregistrer - désactivé si formulaire invalide -->
+          <button
+            type="submit"
+            [disabled]="editForm.invalid"
+            class="flex-1 py-2 px-4 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+          >
+            Enregistrer les modifications
+          </button>
+          
+          <!-- Bouton Annuler -->
+          <button
+            type="button"
+            (click)="cancel()"
+            class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition"
+          >
+            Annuler
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

@@ -4,19 +4,22 @@ import { FormsModule } from '@angular/forms';
 import { Project, StatusStyle } from '../../../../models/project.model';
 import { TaskListComponent } from '../task-list/task-list';
 import { Details } from '../details/details';
+import { EditProjectComponent } from '../edit-project/edit-project';
+
 
 @Component({
   selector: 'app-project-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TaskListComponent, Details],
+  imports: [CommonModule, FormsModule, TaskListComponent, Details, EditProjectComponent],
   templateUrl: './project-list.html',
   styleUrls: ['./project-list.css']
 })
 export class ProjectListComponent implements OnChanges {
   @Input() projects: Project[] = [];
   @Output() projectDeleted = new EventEmitter<number>();
-  
+  @Output() projectUpdated = new EventEmitter<Project>();
   selectedProject: Project | null = null;
+   projectToEdit: Project | null = null;
   searchTerm: string = '';
   filteredProjects: Project[] = [];
 
@@ -73,6 +76,23 @@ export class ProjectListComponent implements OnChanges {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
       this.projectDeleted.emit(projectId);
     }
+  }
+
+  // Ouvrir le formulaire d'édition
+  editProject(project: Project, event: Event) {
+    event.stopPropagation(); // Empêche l'ouverture des détails
+    this.projectToEdit = project;
+  }
+
+  // Fermer le formulaire d'édition
+  closeEditModal() {
+    this.projectToEdit = null;
+  }
+
+  // Mettre à jour le projet après édition
+  updateProject(updatedProject: Project) {
+    this.projectUpdated.emit(updatedProject);
+    this.closeEditModal();
   }
 
   getStatusConfig(status: string): StatusStyle {
