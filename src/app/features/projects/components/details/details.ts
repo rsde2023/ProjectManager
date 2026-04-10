@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Project } from '../../../../models/project.model';
 @Component({
   selector: 'app-details',
   imports: [CommonModule],
@@ -15,7 +16,7 @@ export class Details {
   }
   getProgress(): number {
     if (this.project.tasks.length === 0) return 0;
-    return Math.round((this.project.tasks.filter(t => t.status === 'completed').length / this.project.tasks.length) * 100);
+    return Math.round((this.project.tasks.filter((t: any) => t.status === 'completed').length / this.project.tasks.length) * 100);
   }
 
 }

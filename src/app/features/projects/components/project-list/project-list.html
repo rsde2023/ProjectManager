@@ -6,57 +6,60 @@
     <p class="text-gray-500 mt-2 text-sm">{{filteredProjects.length}} active projects</p>
   </div>
 
-  <input type="text" [(ngModel)]="searchTerm" placeholder="Search projects..."
+  <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()" placeholder="Search projects..."
     class="w-full mb-6 px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" />
 
   @if (filteredProjects.length === 0) {
-  <p class="text-gray-400 text-sm italic py-2">No projects found</p>
+    <p class="text-gray-400 text-sm italic py-2">No projects found</p>
   }
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    @for (project of filteredProjects; track project.name) {
-    <div
-      class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden border border-gray-100">
+    @for (project of filteredProjects; track project.id) {
+      <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden border border-gray-100 relative">
+        
+        <!-- Colored top border -->
+        <div class="h-2" [ngClass]="getStatusConfig(project.status).bgColor"></div>
 
-      <!-- Colored top border -->
-      <div class="h-2" [ngClass]="getStatusConfig(project.status).bgColor"></div>
+        <!-- Bouton de suppression (icône corbeille) -->
+        <button 
+          (click)="deleteProject(project.id, $event)"
+          class="absolute top-2 right-1 text-gray-400 hover:text-red-600 transition-colors duration-200 z-10"
+          title="Supprimer le projet">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
 
-      <div class="p-5">
-        <div class="flex justify-between items-start mb-3">
-          <h2 class="text-xl font-semibold text-gray-800">{{ project.name }}</h2>
-          <span class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-2"
-            [ngClass]="[getStatusConfig(project.status).badgeBg, getStatusConfig(project.status).badgeText]">
-            {{ getStatusConfig(project.status).label }}
-          </span>
-        </div>
-
-        <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ project.description }}</p>
-
-        <div class="mt-4">
-          <div class="flex justify-between items-center mb-3">
-            <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">
-              Tasks ({{project.tasks.length}})
-            </h3>
-            <button class="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors duration-150"
-              (click)="selectProject(project)">
-              View details →
-            </button>
+        <div class="p-5">
+          <div class="flex justify-between items-start mb-3">
+            <h2 class="text-xl font-semibold text-gray-800">{{ project.name }}</h2>
+            <span class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-2"
+              [ngClass]="[getStatusConfig(project.status).badgeBg, getStatusConfig(project.status).badgeText]">
+              {{ getStatusConfig(project.status).label }}
+            </span>
           </div>
-          <app-task-list [tasks]="project.tasks"></app-task-list>
-        </div>
-      </div>
 
-    </div>
+          <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ project.description }}</p>
+
+          <div class="mt-4">
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">
+                Tasks ({{project.tasks.length}})
+              </h3>
+              <button class="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors duration-150"
+                (click)="selectProject(project)">
+                View details →
+              </button>
+            </div>
+            <app-task-list [tasks]="project.tasks"></app-task-list>
+          </div>
+        </div>
+
+      </div>
     }
   </div>
 
-  @if (Projects.length === 0) {
-  <div class="text-center py-12 bg-gray-50 rounded-lg">
-    <p class="text-gray-500">No projects available</p>
-  </div>
-  }
-
   @if (selectedProject) {
-  <app-details [project]="selectedProject" (close)="closeModal()"></app-details>
+    <app-details [project]="selectedProject" (close)="closeModal()"></app-details>
   }
 </div>

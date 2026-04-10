@@ -1,94 +1,81 @@
-import { Component } from '@angular/core';
-import { TaskListComponent } from '../task-list/task-list';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Details } from '../details/details';
 import { FormsModule } from '@angular/forms';
+import { Project, StatusStyle } from '../../../../models/project.model';
+import { TaskListComponent } from '../task-list/task-list';
+import { Details } from '../details/details';
+
 @Component({
   selector: 'app-project-list',
-  imports: [TaskListComponent, CommonModule, Details, FormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, TaskListComponent, Details],
   templateUrl: './project-list.html',
-  styleUrl: './project-list.css',
+  styleUrls: ['./project-list.css']
 })
-export class ProjectListComponent {
+export class ProjectListComponent implements OnChanges {
+  @Input() projects: Project[] = [];
+  @Output() projectDeleted = new EventEmitter<number>();
+  
   selectedProject: Project | null = null;
-  //method to update selected project when a project is clicked
-  selectProject(project: Project) {
-    console.log("Clicked project:", project);
-    this.selectedProject = project;
-  }
-  closeModal() {
-    console.log("closeModal() called in ProjectListComponent - THIS SHOULD APPEAR");
-    console.log("Setting selectedProject to null");
-    this.selectedProject = null;
-  }
+  searchTerm: string = '';
+  filteredProjects: Project[] = [];
+
   statusConfigs: Record<string, StatusStyle> = {
-    'completed': {
-      bgColor: 'bg-green-500',
-      badgeBg: 'bg-green-100',
-      badgeText: 'text-green-700',
-      label: 'Completed'
-    },
     'pending': {
-      bgColor: 'bg-orange-500',
-      badgeBg: 'bg-orange-100',
-      badgeText: 'text-orange-700',
+      badgeBg: 'bg-yellow-50',
+      badgeText: 'text-yellow-600',
       label: 'Pending'
     },
     'In Progress': {
-      bgColor: 'bg-blue-500',
-      badgeBg: 'bg-blue-100',
-      badgeText: 'text-blue-700',
+      badgeBg: 'bg-blue-50',
+      badgeText: 'text-blue-600',
       label: 'In Progress'
+    },
+    'completed': {
+      badgeBg: 'bg-green-50',
+      badgeText: 'text-green-600',
+      label: 'Completed'
     }
   };
-  // Helper method to get status config
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['projects']) {
+      this.filterProjects();
+    }
+  }
+
+  filterProjects() {
+    if (!this.searchTerm.trim()) {
+      this.filteredProjects = this.projects;
+    } else {
+      const term = this.searchTerm.toLowerCase();
+      this.filteredProjects = this.projects.filter(p =>
+        p.name.toLowerCase().includes(term) ||
+        p.description.toLowerCase().includes(term)
+      );
+    }
+  }
+
+  onSearchChange() {
+    this.filterProjects();
+  }
+
+  selectProject(project: Project) {
+    this.selectedProject = project;
+  }
+
+  closeModal() {
+    this.selectedProject = null;
+  }
+
+ deleteProject(projectId: number, event: Event) {
+    event.stopPropagation(); // Empêche la sélection du projet quand on clique sur supprimer
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
+      this.projectDeleted.emit(projectId);
+    }
+  }
+
   getStatusConfig(status: string): StatusStyle {
     return this.statusConfigs[status] || this.statusConfigs['pending'];
   }
-  searchTerm: string = '';
-  get filteredProjects(): Project[] {
-    if (!this.searchTerm.trim()) return this.Projects;
-    return this.Projects.filter(p =>
-      p.name.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
-  }
-  Projects: Project[] = [
-    {
-      name: 'Smart Task Tracker',
-      description: 'A web app that helps teams create, assign, and track tasks with priorities, deadlines, and progress visualization.',
-      status: 'In Progress',
-      tasks: [
-        { title: 'Design database schema', priority: 'High', status: 'In Progress' },
-        { title: 'Setup project repository', priority: 'Low', status: 'pending' }
-      ]
-    },
-    {
-      name: 'project management',
-      description: 'A web app that helps teams manage, lead and track projects with task assignments, progress visualization, and collaboration features.',
-      status: 'In Progress',
-      tasks: []
-    },
-    {
-      name: 'E-Commerce Website Launch',
-      description: 'A responsive e-commerce website with product listings, shopping cart, and checkout functionality.',
-      status: 'completed',
-      tasks: [
-        { title: 'UI Design', priority: 'High', status: 'completed' },
-        { title: 'Market research', priority: 'Medium', status: 'completed' }
-
-      ]
-    },
-    {
-      name: 'Bug Tracking System',
-      description: 'latform to report and manage software bugs.',
-      status: 'pending',
-      tasks: [
-        { title: 'Setup project repository', priority: 'High', status: 'pending' },
-        { title: 'Create bug reporting module', priority: 'Medium', status: 'pending' },
-        { title: 'Content creation', priority: 'Low', status: 'pending' },
-        { title: 'Testing and QA', priority: 'Medium', status: 'pending' }
-
-      ]
-    }
-  ];
 }
