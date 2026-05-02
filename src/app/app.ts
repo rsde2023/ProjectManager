@@ -3,12 +3,12 @@ import { ProjectListComponent } from './features/projects/components/project-lis
 import { AddProjectComponent } from './features/projects/components/add-project/add-project';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Project } from './models/project.model';
-
+import { ContactFormComponent } from './features/projects/components/contact-form/contact-form';
 @Component({
   selector: 'app-root',
-  imports: [ProjectListComponent, AddProjectComponent, CommonModule],
+  imports: [ProjectListComponent, AddProjectComponent, ContactFormComponent, CommonModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App implements OnInit {
   showModal = false;
@@ -41,13 +41,21 @@ export class App implements OnInit {
   onProjectAdded(project: Project) {
     this.projects.push(project);
     this.saveProjectsToLocalStorage();
-    this.closeModal(); 
+    this.closeModal();
   }
 
   onProjectDeleted(projectId: number) {
-    this.projects = this.projects.filter(project => project.id !== projectId);
+    this.projects = this.projects.filter((project) => project.id !== projectId);
     this.saveProjectsToLocalStorage();
     console.log(`Projet avec l'ID ${projectId} supprimé`);
+  }
+
+  onProjectUpdated(updatedProject: Project) {
+    const index = this.projects.findIndex((p) => p.id === updatedProject.id);
+    if (index !== -1) {
+      this.projects[index] = updatedProject;
+      this.saveProjectsToLocalStorage();
+    }
   }
 
   private saveProjectsToLocalStorage() {

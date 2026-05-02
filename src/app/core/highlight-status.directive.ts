@@ -2,25 +2,26 @@ import { Directive, ElementRef, effect, input } from '@angular/core';
 
 @Directive({
   selector: '[appHighlightStatus]',
-  standalone: true
+  standalone: true,
 })
 export class HighlightStatusDirective {
   appHighlightStatus = input<string>('');
 
   constructor(private el: ElementRef) {
     effect(() => {
+      const element = this.el.nativeElement;
+      // Reset styles
+      element.style.borderLeft = '4px solid transparent';
       switch (this.appHighlightStatus()) {
         case 'completed':
-          this.el.nativeElement.style.backgroundColor = '#f0fdf4';
+          element.style.borderLeft = '4px solid #22c55e'; // green
           break;
         case 'In Progress':
-          this.el.nativeElement.style.backgroundColor = '#eff6ff';
+          element.style.borderLeft = '4px solid #3b82f6'; // blue
           break;
         case 'pending':
-          this.el.nativeElement.style.backgroundColor = '#fffbeb';
+          element.style.borderLeft = '4px solid #f59e0b'; // orange
           break;
-        default:
-          this.el.nativeElement.style.backgroundColor = 'transparent';
       }
     });
   }
