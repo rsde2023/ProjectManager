@@ -1,0 +1,280 @@
+<div class="min-h-[calc(100vh-80px)] p-4">
+  <div class="max-w-5xl mx-auto">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+      <h2 class="text-xl font-bold text-gray-800 mb-1">Formulaire dynamique</h2>
+      <p class="text-gray-500 text-xs mb-5">
+        Gestion d'emails multiples et compétences avec FormArray
+      </p>
+
+      <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- ========== SECTION EMAILS ========== -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-md font-semibold text-gray-700 flex items-center gap-2">
+              <svg
+                class="w-4 h-4 text-blue-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
+              </svg>
+              Emails
+            </h3>
+            <button
+              type="button"
+              (click)="addEmail()"
+              class="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Ajouter
+            </button>
+          </div>
+
+          <!-- Zone emails avec scroll LOCAL (max-h-48 = 192px) -->
+          <div formArrayName="emails" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+            <div
+              *ngFor="let emailControl of emails.controls; let i = index"
+              [formGroupName]="i"
+              class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg"
+            >
+              <div class="flex-1">
+                <input
+                  type="email"
+                  formControlName="email"
+                  class="w-full px-3 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  [class.border-red-400]="
+                    emailControl.get('email')?.invalid && emailControl.get('email')?.touched
+                  "
+                  placeholder="email@exemple.com"
+                />
+                <div
+                  *ngIf="emailControl.get('email')?.invalid && emailControl.get('email')?.touched"
+                  class="mt-0.5 text-xs text-red-500"
+                >
+                  <span *ngIf="emailControl.get('email')?.errors?.['required']">Requis</span>
+                  <span *ngIf="emailControl.get('email')?.errors?.['email']">Format invalide</span>
+                </div>
+              </div>
+              <div class="w-28">
+                <select
+                  formControlName="type"
+                  class="w-full px-2 py-1.5 text-sm border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                  <option value="personnel">Perso</option>
+                  <option value="professionnel">Pro</option>
+                  <option value="autre">Autre</option>
+                </select>
+              </div>
+              <button
+                type="button"
+                (click)="removeEmail(i)"
+                [disabled]="emails.length === 1"
+                class="p-1.5 text-gray-400 hover:text-red-500 disabled:opacity-30 transition-colors"
+                title="Supprimer"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <p *ngIf="emails.length === 1" class="text-xs text-gray-400 mt-1">
+            Au moins un email requis
+          </p>
+        </div>
+
+        <!-- ========== SECTION COMPETENCES ========== -->
+        <div class="pt-2 border-t border-gray-100">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-md font-semibold text-gray-700 flex items-center gap-2">
+              <svg
+                class="w-4 h-4 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Compétences
+            </h3>
+            <button
+              type="button"
+              (click)="addCompetence()"
+              class="text-xs text-green-600 hover:text-green-700 flex items-center gap-1"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Ajouter
+            </button>
+          </div>
+
+          <!-- Message d'erreur min compétences -->
+          <div
+            *ngIf="hasMinCompetencesError"
+            class="mb-2 p-1.5 bg-amber-50 border border-amber-200 rounded-md text-xs text-amber-700 flex items-center gap-1"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+            Minimum {{ dynamicForm.errors?.['minCompetences']?.required }} compétences ({{
+              dynamicForm.errors?.['minCompetences']?.actual
+            }}/{{ dynamicForm.errors?.['minCompetences']?.required }})
+          </div>
+
+          <!-- Zone compétences avec scroll LOCAL (max-h-48) -->
+          <div formArrayName="competences" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+            <div
+              *ngFor="let compControl of competences.controls; let i = index"
+              [formGroupName]="i"
+              class="flex items-start gap-2 p-2 bg-gray-50 rounded-lg"
+            >
+              <div class="flex-1">
+                <input
+                  type="text"
+                  formControlName="nom"
+                  class="w-full px-3 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
+                  [class.border-red-400]="
+                    compControl.get('nom')?.invalid && compControl.get('nom')?.touched
+                  "
+                  placeholder="Angular, React, Python..."
+                />
+                <div
+                  *ngIf="compControl.get('nom')?.invalid && compControl.get('nom')?.touched"
+                  class="mt-0.5 text-xs text-red-500"
+                >
+                  <span *ngIf="compControl.get('nom')?.errors?.['required']">Requis</span>
+                  <span *ngIf="compControl.get('nom')?.errors?.['minlength']">Min 2 chars</span>
+                </div>
+              </div>
+              <div class="w-24">
+                <input
+                  type="number"
+                  formControlName="niveau"
+                  min="1"
+                  max="5"
+                  class="w-full px-2 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 text-center"
+                  placeholder="1-5"
+                />
+                <div
+                  *ngIf="compControl.get('niveau')?.invalid && compControl.get('niveau')?.touched"
+                  class="mt-0.5 text-xs text-red-500 text-center"
+                >
+                  <span *ngIf="compControl.get('niveau')?.errors?.['min']">Min 1</span>
+                  <span *ngIf="compControl.get('niveau')?.errors?.['max']">Max 5</span>
+                </div>
+              </div>
+              <div class="w-16 flex items-center gap-0.5">
+                <span class="text-xs text-gray-400">★</span>
+                <span class="text-xs font-medium text-gray-700"
+                  >{{ compControl.get('niveau')?.value || 0 }}/5</span
+                >
+              </div>
+              <button
+                type="button"
+                (click)="removeCompetence(i)"
+                class="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+                title="Supprimer"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Boutons -->
+        <div class="flex gap-3 pt-3 border-t border-gray-100">
+          <button
+            type="submit"
+            class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium disabled:bg-gray-300 disabled:cursor-not-allowed"
+            [disabled]="dynamicForm.invalid"
+          >
+            <span class="flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              Soumettre
+            </span>
+          </button>
+          <button
+            type="button"
+            (click)="resetForm()"
+            class="px-5 py-2 text-gray-500 hover:text-gray-700 transition-colors text-sm"
+          >
+            Réinitialiser
+          </button>
+        </div>
+      </form>
+
+      <!-- État du formulaire -->
+      <div class="mt-4 pt-3 border-t border-gray-100">
+        <details class="cursor-pointer">
+          <summary class="text-xs font-medium text-gray-500 hover:text-gray-700">
+            État du formulaire
+          </summary>
+          <div class="mt-2">
+            <pre class="bg-gray-50 p-2 rounded-md text-xs overflow-x-auto max-h-32">{{
+              dynamicForm.value | json
+            }}</pre>
+            <div class="flex gap-2 mt-2 text-xs">
+              <span class="px-2 py-0.5 rounded-full bg-green-100 text-green-700"
+                >✓ Valide: {{ dynamicForm.valid }}</span
+              >
+              <span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
+                Emails: {{ emails.length }}</span
+              >
+              <span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
+                Compétences: {{ competences.length }}</span
+              >
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
