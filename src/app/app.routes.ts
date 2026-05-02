@@ -3,6 +3,7 @@ import { ContactFormComponent } from './features/projects/components/contact-for
 import { ProjectListComponent } from './features/projects/components/project-list/project-list';
 import { LayoutComponent } from './features/projects/components/layout/layout';
 import { RegisterComponent } from './features/projects/components/register/register';
+import { UserFormComponent } from './features/projects/components/user-form/user-form';
 export const routes: Routes = [
   {
     path: '',
@@ -12,6 +13,7 @@ export const routes: Routes = [
       { path: 'projects', component: ProjectListComponent },
       { path: 'contact', component: ContactFormComponent },
       { path: 'register', component: RegisterComponent },
+      { path: 'user-form', component: UserFormComponent }
     ],
   },
   { path: '**', redirectTo: 'projects' },
