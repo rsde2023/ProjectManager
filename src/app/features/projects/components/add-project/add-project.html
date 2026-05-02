@@ -1,201 +1,174 @@
-<!-- Modal Overlay -->
-<div class="fixed inset-0 bg-black bg-opacity-50 z-40" (click)="closeModal()"></div>
-
-<!-- Modal Content -->
-<div class="fixed inset-0 flex items-center justify-center z-50 p-4">
-  <div class="max-w-lg w-full bg-white shadow-lg rounded-xl p-8 max-h-screen overflow-y-auto">
-    <header class="mb-6 flex justify-between items-center">
-      <h2 class="text-2xl font-bold text-gray-800">Ajouter un projet</h2>
-      <button
-        (click)="closeModal()"
-        class="text-gray-500 hover:text-gray-700 transition-colors"
-        title="Fermer"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+<div
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+  (click)="closeModal()"
+>
+  <div
+    class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[85vh] overflow-y-auto"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- En-tête - plus compact -->
+    <div class="flex justify-between items-center px-4 py-3 border-b sticky top-0 bg-white z-10">
+      <h2 class="text-lg font-bold text-gray-800">Ajouter un projet</h2>
+      <button (click)="closeModal()" class="text-gray-400 hover:text-gray-600">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
         </svg>
       </button>
-    </header>
-
-  <!-- Message de succès -->
-  @if (successMessage) {
-    <div class="mb-4 px-4 py-3 bg-green-100 text-green-700 rounded-lg text-sm font-medium">
-      {{ successMessage }}
-    </div>
-  }
-
-  <form #projectForm="ngForm" (ngSubmit)="onSubmit()">
-
-    <!-- Nom du projet -->
-    <div class="mb-5">
-      <label class="block text-sm font-medium text-gray-700 mb-1">Nom du projet</label>
-      <input
-        type="text"
-        name="name"
-        [(ngModel)]="newProject.name"
-        #name="ngModel"
-        required
-        minlength="4"
-        class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-        [class.border-red-500]="name.invalid && name.touched"
-        placeholder="Nom du projet"
-      />
-      @if (name.invalid && name.touched) {
-        @if (name.errors?.['required']) {
-          <p class="text-red-500 text-xs mt-1">Le nom du projet est obligatoire.</p>
-        }
-        @if (name.errors?.['minlength']) {
-          <p class="text-red-500 text-xs mt-1">Le nom doit comporter au moins 4 caractères.</p>
-        }
-      }
     </div>
 
-    <!-- Description -->
-    <div class="mb-5">
-      <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-      <textarea
-        name="description"
-        [(ngModel)]="newProject.description"
-        #description="ngModel"
-        required
-        rows="3"
-        class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-        [class.border-red-500]="description.invalid && description.touched"
-        placeholder="Description du projet"
-      ></textarea>
-      @if (description.invalid && description.touched) {
-        <p class="text-red-500 text-xs mt-1">La description est obligatoire.</p>
-      }
-    </div>
-
-    <!-- Statut -->
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
-      <select
-        name="status"
-        [(ngModel)]="newProject.status"
-        #status="ngModel"
-        required
-        class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-        [class.border-red-500]="status.invalid && status.touched"
+    <!-- Messages -->
+    @if (successMessage) {
+      <div
+        class="mx-4 mt-3 p-2 bg-green-100 border border-green-400 text-green-700 rounded text-sm"
       >
-        <option value="">-- Sélectionner un statut --</option>
-        <option value="pending">Pending</option>
-        <option value="In Progress">In Progress</option>
-        <option value="completed">Completed</option>
-      </select>
-      @if (status.invalid && status.touched) {
-        <p class="text-red-500 text-xs mt-1">Le statut ne doit pas être vide.</p>
-      }
-    </div>
+        {{ successMessage }}
+      </div>
+    }
 
-    <!-- Tâches -->
-    <div class="mb-6 border-t pt-6">
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">Ajouter des tâches</h3>
-      
-      <!-- Ajouter une tâche -->
-      <div class="space-y-3 mb-4 p-4 bg-gray-50 rounded-lg">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Titre de la tâche</label>
+    @if (errorMessage) {
+      <div class="mx-4 mt-3 p-2 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+        {{ errorMessage }}
+      </div>
+    }
+
+    <!-- Formulaire - paddings réduits -->
+    <form (ngSubmit)="onSubmit()" class="p-4 space-y-3">
+      <!-- Nom du projet -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-0.5">
+          Nom du projet <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          [(ngModel)]="newProject.name"
+          name="projectName"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          placeholder="Ex: Application Mobile"
+        />
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-0.5">
+          Description <span class="text-red-500">*</span>
+        </label>
+        <textarea
+          [(ngModel)]="newProject.description"
+          name="projectDescription"
+          rows="2"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          placeholder="Description détaillée du projet..."
+        ></textarea>
+      </div>
+
+      <!-- Statut -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-0.5">
+          Statut <span class="text-red-500">*</span>
+        </label>
+        <select
+          [(ngModel)]="newProject.status"
+          name="projectStatus"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+        >
+          <option value="" disabled>Sélectionnez un statut</option>
+          <option value="pending">Pending</option>
+          <option value="In Progress">In Progress</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+
+      <!-- Section Tâches -->
+      <div class="border-t pt-3">
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Tâches (optionnel)</h3>
+
+        <!-- Formulaire d'ajout de tâche - plus compact -->
+        <div class="flex gap-2 mb-2">
           <input
             type="text"
             [(ngModel)]="newTask.title"
             name="taskTitle"
-            placeholder="Entrez le titre de la tâche"
-            class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+            class="flex-1 px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            placeholder="Nom de la tâche"
           />
+          <select
+            [(ngModel)]="newTask.priority"
+            name="taskPriority"
+            class="px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-24"
+          >
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+          <button
+            type="button"
+            (click)="addTask()"
+            class="px-3 py-1.5 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm"
+          >
+            +
+          </button>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Priorité</label>
-            <select
-              [(ngModel)]="newTask.priority"
-              name="taskPriority"
-              class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-            >
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
-            <select
-              [(ngModel)]="newTask.status"
-              name="taskStatus"
-              class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-            >
-              <option value="pending">Pending</option>
-              <option value="In Progress">In Progress</option>
-              <option value="completed">Completed</option>
-            </select>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          (click)="addTask()"
-          [disabled]="!newTask.title.trim()"
-          class="w-full py-2 px-4 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
-        >
-          + Ajouter une tâche
-        </button>
-      </div>
-
-      <!-- Liste des tâches ajoutées -->
-      @if (tasks.length > 0) {
-        <div class="mb-4">
-          <h4 class="text-sm font-medium text-gray-700 mb-2">Tâches ajoutées ({{ tasks.length }})</h4>
-          <ul class="space-y-2">
+        <!-- Liste des tâches -->
+        @if (tasks.length > 0) {
+          <div class="bg-gray-50 rounded-md p-2 max-h-32 overflow-y-auto">
             @for (task of tasks; track $index) {
-              <li class="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <div class="flex-1">
-                  <p class="text-sm font-medium text-gray-800">{{ task.title }}</p>
-                  <p class="text-xs text-gray-600">
-                    <span class="inline-block mr-3">Priorité: <strong>{{ task.priority }}</strong></span>
-                    <span>Statut: <strong>{{ task.status }}</strong></span>
-                  </p>
+              <div class="flex justify-between items-center p-1.5 border-b last:border-0 text-sm">
+                <div>
+                  <span class="font-medium">{{ task.title }}</span>
+                  <span
+                    class="ml-2 text-xs px-1.5 py-0.5 rounded-full"
+                    [class.bg-green-100]="task.priority === 'Low'"
+                    [class.bg-yellow-100]="task.priority === 'Medium'"
+                    [class.bg-red-100]="task.priority === 'High'"
+                  >
+                    {{ task.priority }}
+                  </span>
                 </div>
                 <button
                   type="button"
                   (click)="removeTask($index)"
-                  class="ml-2 px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition"
+                  class="text-red-500 hover:text-red-700"
                 >
-                  Supprimer
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
                 </button>
-              </li>
+              </div>
             }
-          </ul>
-        </div>
-      }
-    </div>
+          </div>
+        }
+      </div>
 
-    <!-- Boutons -->
-    <div class="flex gap-3">
-      <button
-        type="submit"
-        [disabled]="projectForm.invalid"
-        class="flex-1 py-2 px-4 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
-      >
-        Enregistrer
-      </button>
-      <button
-        type="button"
-        (click)="onReset(projectForm)"
-        class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition"
-      >
-        Réinitialiser
-      </button>
-      <button
-        type="button"
-        (click)="closeModal()"
-        class="flex-1 py-2 px-4 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition"
-      >
-        Fermer
-      </button>
-    </div>
-
-  </form>
+      <!-- Boutons d'action - plus compact -->
+      <div class="flex justify-end gap-3 pt-3 border-t">
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+        >
+          Annuler
+        </button>
+        <button
+          type="submit"
+          class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
+          [disabled]="
+            !newProject.name.trim() || !newProject.description.trim() || !newProject.status
+          "
+        >
+          Créer
+        </button>
+      </div>
+    </form>
   </div>
 </div>
