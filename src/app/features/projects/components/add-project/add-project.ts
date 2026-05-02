@@ -10,7 +10,8 @@ import { Project, Task } from '../../../../models/project.model';
   templateUrl: './add-project.html',
 })
 export class AddProjectComponent {
-  errorMessage: string = ''; // Message d'erreur global
+  errorMessage: string = '';
+  successMessage: string = '';
   
   @Output() close = new EventEmitter<void>();
   @Output() projectAdded = new EventEmitter<Project>();
@@ -28,7 +29,10 @@ export class AddProjectComponent {
   };
 
   tasks: Task[] = [];
-  successMessage: string = '';
+
+  // Options pour les select
+  statusOptions = ['pending', 'In Progress', 'completed'];
+  priorityOptions = ['Low', 'Medium', 'High'];
 
   // Ajouter une tâche
   addTask() {
@@ -38,7 +42,7 @@ export class AddProjectComponent {
         priority: this.newTask.priority,
         status: this.newTask.status as any
       });
-      // Réinitialiser le formulaire de tâche après ajout
+      // Réinitialiser le formulaire de tâche
       this.newTask = {
         title: '',
         priority: 'Medium',
@@ -47,7 +51,66 @@ export class AddProjectComponent {
     }
   }
 
- 
+  // Supprimer une tâche
+  removeTask(index: number) {
+    this.tasks.splice(index, 1);
+  }
+
+  // Fermer le modal
+  closeModal() {
+    this.resetForm();
+    this.close.emit();
+  }
+
+  // Soumettre le formulaire
+  onSubmit() {
+    // Réinitialiser le message d'erreur
+    this.errorMessage = '';
+    
+    // Validation du nom
+    if (!this.newProject.name.trim()) {
+      this.errorMessage = 'Le nom du projet est obligatoire';
+      return;
+    }
+    
+    if (this.newProject.name.trim().length < 4) {
+      this.errorMessage = 'Le nom doit comporter au moins 4 caractères';
+      return;
+    }
+    
+    // Validation de la description
+    if (!this.newProject.description.trim()) {
+      this.errorMessage = 'La description du projet est obligatoire';
+      return;
+    }
+    
+    // Validation du statut
+    if (!this.newProject.status) {
+      this.errorMessage = 'Le statut du projet est obligatoire';
+      return;
+    }
+    
+    // Créer le projet
+    const project: Project = {
+      id: Date.now(),
+      name: this.newProject.name,
+      description: this.newProject.description,
+      status: this.newProject.status,
+      tasks: [...this.tasks]
+    };
+    
+    // Émettre l'événement vers le parent
+    this.projectAdded.emit(project);
+    
+    // Afficher le message de succès
+    this.successMessage = ` Le projet « ${this.newProject.name} » a été créé avec succès !`;
+    
+    // Réinitialiser le formulaire après 1.5 secondes et fermer
+    setTimeout(() => {
+      this.resetForm();
+      this.closeModal();
+    }, 1500);
+  }
 
   // Réinitialiser complètement le formulaire
   private resetForm() {
@@ -62,69 +125,7 @@ export class AddProjectComponent {
       status: 'pending'
     };
     this.tasks = [];
-    this.successMessage = '';
     this.errorMessage = '';
+    // On garde successMessage pour l'afficher avant fermeture
   }
-
-  // Supprimer une tâche
-  removeTask(index: number) {
-    this.tasks.splice(index, 1);
-  }
-
-  closeModal() {
-    this.close.emit();
-  }
-
-  // Soumettre le formulaire
-  onSubmit() {
-    // Réinitialiser le message d'erreur
-    this.errorMessage = '';
-    
-    // Validation des champs requis
-    if (!this.newProject.name.trim()) {
-      this.errorMessage = 'Le nom du projet est obligatoire';
-      return;
-    }
-    
-    if (this.newProject.name.trim().length < 4) {
-      this.errorMessage = 'Le nom doit comporter au moins 4 caractères';
-      return;
-    }
-    
-    if (!this.newProject.description.trim()) {
-      this.errorMessage = 'La description du projet est obligatoire';
-      return;
-    }
-    
-    if (!this.newProject.status) {
-      this.errorMessage = 'Le statut du projet est obligatoire';
-      return;
-    }
-    
-    // Créer le projet
-    const project: Project = {
-      id: Date.now(),
-      name: this.newProject.name,
-      description: this.newProject.description,
-      status: this.newProject.status,
-      tasks: [...this.tasks] // Créer une copie du tableau des tâches
-    };
-    
-    // Émettre l'événement vers le parent
-    this.projectAdded.emit(project);
-    
-    // Afficher le message de succès
-    this.successMessage = `Le projet « ${this.newProject.name} » a été créé avec succès !`;
-    
- 
-  }
-
-  // Réinitialiser le formulaire via le bouton
-  onReset(projectForm: any) {
-    if (projectForm && projectForm.resetForm) {
-      projectForm.resetForm();
-    }
-    this.resetForm();
-  }
-
 }

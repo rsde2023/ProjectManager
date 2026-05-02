@@ -4,23 +4,34 @@
   }
 
   @for (task of tasks; track task.title) {
-    <div [appHighlightStatus]="task.status" class="flex items-center justify-between p-2 hover:bg-gray-50 rounded-md transition-colors duration-150">
-      <!-- Task title  -->
-      <div class="flex items-center space-x-3 flex-1 min-w-0 " >
-        <span class="text-sm font-medium text-gray-700 truncate" >{{ task.title }}</span>
+    <div
+      [appHighlightStatus]="task.status"
+      class="flex items-center justify-between p-2 hover:bg-gray-50 rounded-md transition-colors duration-150"
+    >
+      <!-- Task title -->
+      <div class="flex items-center space-x-3 flex-1 min-w-0">
+        <span class="text-sm font-medium text-gray-700 truncate">
+          {{ task.title }}
+        </span>
       </div>
 
       <!-- Priority and status badges -->
       <div class="flex items-center space-x-2 flex-shrink-0 ml-2">
-        <!-- Priority badge -->
-        <span class="text-xs px-2 py-0.5 rounded-full font-medium"
-              [class]="getPriorityConfig(task.priority).bgClass + ' ' + getPriorityConfig(task.priority).textClass">
+        <!--  Priority badge using PIPE -->
+        <span
+          class="text-xs px-2 py-0.5 rounded-full font-medium"
+          [ngClass]="task.priority | priorityColor"
+        >
           {{ task.priority }}
         </span>
-        
-        <!-- Status badge (hidden on mobile) -->
-        <span class="text-xs px-2 py-0.5 rounded-full font-medium hidden sm:block"
-              [class]="getStatusConfig(task.status).badgeBg + ' ' + getStatusConfig(task.status).badgeText">
+
+        <!-- Status badge -->
+        <span
+          class="text-xs px-2 py-0.5 rounded-full font-medium hidden sm:block"
+          [class]="
+            getStatusConfig(task.status).badgeBg + ' ' + getStatusConfig(task.status).badgeText
+          "
+        >
           {{ task.status }}
         </span>
       </div>
