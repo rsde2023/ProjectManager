@@ -1,46 +1,43 @@
 <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" (click)="cancel()">
   
-  <div class="max-w-lg w-full bg-white shadow-xl rounded-xl max-h-[90vh] overflow-y-auto" (click)="onModalContentClick($event)">
+  <div class="max-w-xl w-full bg-white shadow-xl rounded-xl max-h-[85vh] overflow-y-auto" (click)="onModalContentClick($event)">
     
-    <!-- Modal header -->
-    <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
-      <h2 class="text-2xl font-bold text-gray-800">Modifier le projet</h2>
-      <button
-        (click)="cancel()"
-        class="text-gray-400 hover:text-gray-600 transition-colors"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <!-- Modal header  -->
+    <div class="sticky top-0 bg-white border-b px-4 py-2.5 flex justify-between items-center">
+      <h2 class="text-lg font-bold text-gray-800">✏️ Modifier le projet</h2>
+      <button (click)="cancel()" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
     </div>
 
     <!-- Modal body -->
-    <div class="p-6">
+    <div class="p-4">
       
       <!-- Message de succès -->
       @if (successMessage) {
-        <div class="mb-4 px-4 py-3 bg-green-100 text-green-700 rounded-lg text-sm font-medium">
-          {{ successMessage }}
+        <div class="mb-3 px-3 py-2 bg-green-100 text-green-700 rounded-lg text-sm">
+           {{ successMessage }}
         </div>
       }
 
       <form #editForm="ngForm" (ngSubmit)="onSubmit()">
         
         <!-- ID du projet (non modifiable) -->
-        <div class="mb-5">
-          <label class="block text-sm font-medium text-gray-700 mb-1">ID du projet</label>
+        <div class="mb-3">
+          <label class="block text-xs font-medium text-gray-700 mb-0.5">ID du projet</label>
           <input
             type="text"
             [value]="editProject.id"
             disabled
-            class="w-full px-4 py-2 border rounded-lg text-sm bg-gray-100 text-gray-500 cursor-not-allowed"
+            class="w-full px-3 py-1.5 border rounded-lg text-sm bg-gray-100 text-gray-500 cursor-not-allowed"
           />
         </div>
 
-        <!-- Nom du projet avec validation HTML -->
-        <div class="mb-5">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Nom du projet *</label>
+        <!-- Nom du projet -->
+        <div class="mb-3">
+          <label class="block text-xs font-medium text-gray-700 mb-0.5">Nom du projet *</label>
           <input
             type="text"
             name="name"
@@ -48,164 +45,119 @@
             #name="ngModel"
             required
             minlength="4"
-            class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+            class="w-full px-3 py-1.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
             [class.border-red-500]="name.invalid && name.touched"
             placeholder="Nom du projet"
           />
-          <!-- Messages d'erreur HTML -->
           @if (name.invalid && name.touched) {
             @if (name.errors?.['required']) {
-              <p class="text-red-500 text-xs mt-1">Le nom du projet est obligatoire.</p>
+              <p class="text-red-500 text-xs mt-0.5">Obligatoire</p>
             }
             @if (name.errors?.['minlength']) {
-              <p class="text-red-500 text-xs mt-1">Le nom doit comporter au moins 4 caractères.</p>
+              <p class="text-red-500 text-xs mt-0.5">Minimum 4 caractères</p>
             }
           }
         </div>
 
-        <!-- Description avec validation HTML -->
-        <div class="mb-5">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+        <!-- Description -->
+        <div class="mb-3">
+          <label class="block text-xs font-medium text-gray-700 mb-0.5">Description *</label>
           <textarea
             name="description"
             [(ngModel)]="editProject.description"
             #description="ngModel"
             required
-            rows="3"
-            class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+            rows="2"
+            class="w-full px-3 py-1.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
             [class.border-red-500]="description.invalid && description.touched"
             placeholder="Description du projet"
           ></textarea>
-          <!-- Message d'erreur HTML -->
           @if (description.invalid && description.touched) {
-            <p class="text-red-500 text-xs mt-1">La description est obligatoire.</p>
+            <p class="text-red-500 text-xs mt-0.5">Obligatoire</p>
           }
         </div>
 
-        <!-- Statut avec validation HTML -->
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Statut *</label>
+        <!-- Statut -->
+        <div class="mb-3">
+          <label class="block text-xs font-medium text-gray-700 mb-0.5">Statut *</label>
           <select
             name="status"
             [(ngModel)]="editProject.status"
             #status="ngModel"
             required
-            class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+            class="w-full px-3 py-1.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
             [class.border-red-500]="status.invalid && status.touched"
           >
-            <option value="">-- Sélectionner un statut --</option>
-            @for (statusOption of statusOptions; track statusOption) {
-              <option [value]="statusOption">
-                {{ statusOption === 'In Progress' ? 'In Progress' : (statusOption | titlecase) }}
-              </option>
-            }
+            <option value="">-- Sélectionner --</option>
+            <option value="pending"> Pending</option>
+            <option value="In Progress"> In Progress</option>
+            <option value="completed"> Completed</option>
           </select>
-          <!-- Message d'erreur HTML -->
-          @if (status.invalid && status.touched) {
-            <p class="text-red-500 text-xs mt-1">Le statut ne doit pas être vide.</p>
-          }
         </div>
 
-        <!-- Tâches existantes -->
         @if (editProject.tasks.length > 0) {
-          <div class="mb-6 border-t pt-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Tâches existantes ({{ editProject.tasks.length }})</h3>
-            <ul class="space-y-2 max-h-48 overflow-y-auto">
+          <div class="mb-3 border-t pt-3">
+            <h3 class="text-sm font-semibold text-gray-800 mb-2">📋 Tâches ({{ editProject.tasks.length }})</h3>
+            <div class="max-h-32 overflow-y-auto space-y-1">
               @for (task of editProject.tasks; track $index) {
-                <li class="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                <div class="flex items-center justify-between p-2 bg-gray-50 border rounded text-sm">
                   <div class="flex-1">
-                    <p class="text-sm font-medium text-gray-800">{{ task.title }}</p>
-                    <p class="text-xs text-gray-600">
-                      <span class="inline-block mr-3">Priorité: <strong>{{ task.priority }}</strong></span>
-                      <span>Statut: <strong>{{ task.status === 'In Progress' ? 'In Progress' : (task.status | titlecase) }}</strong></span>
-                    </p>
+                    <span class="font-medium">{{ task.title }}</span>
+                    <span class="ml-2 text-xs px-1.5 py-0.5 rounded-full"
+                      [class.bg-green-100]="task.priority === 'Low'"
+                      [class.bg-yellow-100]="task.priority === 'Medium'"
+                      [class.bg-red-100]="task.priority === 'High'">
+                      {{ task.priority }}
+                    </span>
                   </div>
-                  <button
-                    type="button"
-                    (click)="removeTask($index)"
-                    class="ml-2 px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition"
-                  >
-                    Supprimer
+                  <button type="button" (click)="removeTask($index)" class="text-red-500 hover:text-red-700 text-xs px-2 py-0.5 rounded">
+                    ✕
                   </button>
-                </li>
+                </div>
               }
-            </ul>
+            </div>
           </div>
         }
 
-        <!-- Ajouter une nouvelle tâche -->
-        <div class="mb-6 border-t pt-6">
-          <h3 class="text-lg font-semibold text-gray-800 mb-4">Ajouter une tâche</h3>
+        <!-- Ajouter une tâche - compact -->
+        <div class="mb-3 border-t pt-3">
+          <h3 class="text-sm font-semibold text-gray-800 mb-2"> Ajouter une tâche</h3>
           
-          <div class="space-y-3 mb-4 p-4 bg-gray-50 rounded-lg">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Titre de la tâche</label>
-              <input
-                type="text"
-                [(ngModel)]="newTask.title"
-                name="newTaskTitle"
-                placeholder="Entrez le titre de la tâche"
-                class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-              />
+          <div class="space-y-2 mb-2 p-2 bg-gray-50 rounded-lg">
+            <input
+              type="text"
+              [(ngModel)]="newTask.title"
+              name="newTaskTitle"
+              placeholder="Titre de la tâche"
+              class="w-full px-2 py-1.5 border rounded text-sm"
+            />
+            <div class="flex gap-2">
+              <select [(ngModel)]="newTask.priority" name="newTaskPriority" class="flex-1 px-2 py-1.5 border rounded text-sm">
+                <option value="Low"> Low</option>
+                <option value="Medium"> Medium</option>
+                <option value="High"> High</option>
+              </select>
+              <select [(ngModel)]="newTask.status" name="newTaskStatus" class="flex-1 px-2 py-1.5 border rounded text-sm">
+                <option value="pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="completed">Completed</option>
+              </select>
             </div>
-
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Priorité</label>
-                <select
-                  [(ngModel)]="newTask.priority"
-                  name="newTaskPriority"
-                  class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-                >
-                  @for (priority of priorityOptions; track priority) {
-                    <option [value]="priority">{{ priority }}</option>
-                  }
-                </select>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
-                <select
-                  [(ngModel)]="newTask.status"
-                  name="newTaskStatus"
-                  class="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-                >
-                  @for (statusOption of statusOptions; track statusOption) {
-                    <option [value]="statusOption">
-                      {{ statusOption === 'In Progress' ? 'In Progress' : (statusOption | titlecase) }}
-                    </option>
-                  }
-                </select>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              (click)="addTask()"
-              [disabled]="!newTask.title.trim()"
-              class="w-full py-2 px-4 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
-            >
-              + Ajouter cette tâche
+            <button type="button" (click)="addTask()" [disabled]="!newTask.title.trim()"
+              class="w-full py-1.5 bg-green-500 text-white rounded text-sm font-medium hover:bg-green-600 disabled:opacity-50">
+              + Ajouter
             </button>
           </div>
         </div>
 
-        <!-- Boutons -->
-        <div class="flex gap-3 sticky bottom-0 bg-white pt-4 border-t mt-4">
-          <!-- Bouton Enregistrer - désactivé si formulaire invalide -->
-          <button
-            type="submit"
-            [disabled]="editForm.invalid"
-            class="flex-1 py-2 px-4 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
-          >
-            Enregistrer les modifications
+        <!-- Boutons - compacts -->
+        <div class="flex gap-2 pt-2 border-t">
+          <button type="submit" [disabled]="editForm.invalid"
+            class="flex-1 py-1.5 bg-blue-500 text-white rounded text-sm font-medium hover:bg-blue-600 disabled:opacity-50">
+            💾 Enregistrer
           </button>
-          
-          <!-- Bouton Annuler -->
-          <button
-            type="button"
-            (click)="cancel()"
-            class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition"
-          >
+          <button type="button" (click)="cancel()"
+            class="flex-1 py-1.5 bg-gray-200 text-gray-700 rounded text-sm font-medium hover:bg-gray-300">
             Annuler
           </button>
         </div>
