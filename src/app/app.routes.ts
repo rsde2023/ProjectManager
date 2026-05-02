@@ -5,6 +5,7 @@ import { LayoutComponent } from './features/projects/components/layout/layout';
 import { RegisterComponent } from './features/projects/components/register/register';
 import { UserFormComponent } from './features/projects/components/user-form/user-form';
 import { DynamicFormComponent } from './features/projects/components/dynamic-form/dynamic-form';
+import { AddressFormComponent } from './features/projects/components/address-form/address-form';
 export const routes: Routes = [
   {
     path: '',
@@ -15,7 +16,8 @@ export const routes: Routes = [
       { path: 'contact', component: ContactFormComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'user-form', component: UserFormComponent },
-      { path: 'dynamic-form', component: DynamicFormComponent }
+      { path: 'dynamic-form', component: DynamicFormComponent },
+      { path: 'address-form', component: AddressFormComponent },
     ],
   },
   { path: '**', redirectTo: 'projects' },
